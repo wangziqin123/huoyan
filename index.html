@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+    body,html{
+        width:100%;
+        height: 100%;
+    }
+    canvas{
+        background: #000;
+    }
+</style>
+<script>
+    window.onload=function(){
+        var W=document.documentElement.clientWidth;
+        var H=document.documentElement.clientHeight;
+        var canvas=document.querySelector("canvas");
+        var cobj=canvas.getContext("2d");
+        var arr=[];
+        canvas.width=W;
+        canvas.height=H;
+        var left,top;
+        function fire(){
+            this.x=0;
+            this.y=0;
+            //this.speedx=4*Math.random()-2;
+            this.speedy=-10*Math.random()-1;
+            this.life=4;
+            this.r=10+2*Math.random();
+            //this.speedr=0.1;
+            this.color="rgb(226,17,12)";
+        }
+
+        fire.prototype={
+            //绘制方法
+            draw:function(){
+                cobj.save();
+                cobj.beginPath();
+                cobj.fillStyle=this.color;
+                cobj.globalCompositeOperation="lighter";
+                cobj.translate(this.x,this.y);
+                cobj.arc(0,0,this.r,0,Math.PI*2);
+                cobj.fill();
+                cobj.restore();
+            },
+            //放入页面
+            update:function(){
+                this.x+=(12*Math.random()-6);
+                this.y+=this.speedy;
+                this.life-=0.2;
+                this.r-=0.5;
+            }
+
+        }
+        canvas.onmousemove=function(e){
+            left= e.offsetX;
+            top= e.offsetY;
+        }
+     /*   console.log(left+"--"+top);*/
+        function lizi(){
+            cobj.clearRect(0,0,W,H)
+            var a=new fire();
+          /*  a.x=0;
+            a.y=0;*/
+            arr.push(a);
+            for (var i=0;i<arr.length;i++){
+                arr[i].draw();
+                arr[i].update();
+                if(arr[i].r<0 || arr[i].life<0){
+                    arr[i]=new fire();
+                    if(left && top){
+                        arr[i].x=left;
+                        arr[i].y=top;
+                    }else{
+                        arr[i].x=W/2;
+                        arr[i].y=H/2;
+                    }
+
+                }
+            }
+        }
+        setInterval(lizi,30)
+
+    }
+</script>
+<body>
+<canvas></canvas>
+</body>
+</html>
